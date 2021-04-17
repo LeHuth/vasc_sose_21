@@ -40,28 +40,38 @@ while np.float32(1) + np.float32(2) ** (-i) != np.float32(1):
 # Print Anweisung in / nach dem Loop
 print('{0:4.0f} | {1:16.8e} | ungleich 1'.format(i, eps32))
 
-'''
+
 # Aufgabe 1 (b)
 # Werten Sie 30 Iterationen aus und speichern Sie den Fehler in einem
 # Fehlerarray err
 N = 30
 err = []
 # sqrt(2) kann vorberechnet werden
-sn = sqrt(2)
-
+sn = np.sqrt(2)
+#print(sn)
 for n in range(2, N):
-    pass
     # 1. Umfang u berechnen
     # 2. Fehler en berechnen und in err speichern
     # Fehler ausgeben print('{0:2d}\t{1:1.20f}\t{2:1.20e}'.format(n, u, en))
     # YOUR CODE HERE
 
+    s2n = sqrt(2-sqrt(4-(sn)**2))
+    sn = s2n
+    #print((2*pi) - (n*s2n) *4)
+    u = sn* 2*(2**n)
+    diff = (pi * 2) - sn* 2*(2**n)
+    print(n, diff)
+    err.append(abs(diff))
+
+
 # Plotten Sie den Fehler
+#print(err)
 plt.figure(figsize=(6.0, 4.0))
 plt.semilogy(range(2, N), err, 'rx')
 plt.xlim(2, N - 1)
 plt.ylim(1e-16, 10)
-
+plt.show()
+'''
 # Aufgabe 1 (c)
 # Löschen des Arrays und wir fangen mit der Berechnung von vorn an.
 # Nur diesmal mit der leicht veranderten Variante
@@ -71,5 +81,5 @@ plt.figure(figsize=(6.0, 4.0))
 plt.semilogy(range(2, N), err, 'rx')
 plt.xlim(2, N - 1)
 plt.ylim(1e-16, 10)
-plt.show()
+
 '''
