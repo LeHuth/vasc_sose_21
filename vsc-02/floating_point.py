@@ -48,7 +48,6 @@ N = 30
 err = []
 # sqrt(2) kann vorberechnet werden
 sn = np.sqrt(2)
-#print(sn)
 for n in range(2, N):
     # 1. Umfang u berechnen
     # 2. Fehler en berechnen und in err speichern
@@ -57,29 +56,34 @@ for n in range(2, N):
 
     s2n = sqrt(2-sqrt(4-(sn)**2))
     sn = s2n
-    #print((2*pi) - (n*s2n) *4)
     u = sn* 2*(2**n)
-    diff = (pi * 2) - sn* 2*(2**n)
-    print(n, diff)
+    diff = (pi * 2) - u
     err.append(abs(diff))
-
-
+    print('{0:2d}\t{1:1.20f}\t{2:1.20e}'.format(n, u, diff))
 # Plotten Sie den Fehler
-#print(err)
+plt.figure(figsize=(6.0, 4.0))
+plt.semilogy(range(2, N), err, 'rx')
+plt.xlim(2, N - 1)
+plt.ylim(1e-16, 10)
+print("--------------------------------------------")
+# Aufgabe 1 (c)
+# Löschen des Arrays und wir fangen mit der Berechnung von vorn an.
+# Nur diesmal mit der leicht veranderten Variante
+err = []
+sn1 = np.sqrt(2)
+for n in range(2, N):
+    s2n_alt = sn1 / sqrt(2+sqrt(4-sn1**2))
+    sn1 = s2n_alt
+    u = sn1 * 2 * (2 ** n)
+    diff1 = (pi * 2) - u
+    err.append(abs(diff1))
+    print('{0:2d}\t{1:1.20f}\t{2:1.20e}'.format(n, u, diff1))
+
 plt.figure(figsize=(6.0, 4.0))
 plt.semilogy(range(2, N), err, 'rx')
 plt.xlim(2, N - 1)
 plt.ylim(1e-16, 10)
 plt.show()
-'''
-# Aufgabe 1 (c)
-# Löschen des Arrays und wir fangen mit der Berechnung von vorn an.
-# Nur diesmal mit der leicht veranderten Variante
-err = []
 
-plt.figure(figsize=(6.0, 4.0))
-plt.semilogy(range(2, N), err, 'rx')
-plt.xlim(2, N - 1)
-plt.ylim(1e-16, 10)
 
-'''
+
