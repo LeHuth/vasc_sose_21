@@ -1,0 +1,2 @@
+Die Plots stellen den Verlauf der Abweichung zwischen der Annäherung mit dem Archimedis Verfahren
+und der Berechnung mit PI dar.
