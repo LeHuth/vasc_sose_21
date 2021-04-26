@@ -26,16 +26,17 @@ print(x)
 
 def matmult(M1, M2):
     assert M1.shape[1] == M2.shape[0]
-    return_arr = np.arange(0)
-    for row in M1:
-        for col in M2.T:
-            return_arr = np.append(return_arr, np.sum(row*col))
+    r_mat= np.empty((M1.shape[0],M2.shape[1]))
+    for idx1, row in enumerate(M1):
+        for idx2, col in enumerate(M2.T):
+            r_mat[idx1, idx2] = np.sum(row*col)
 
-    return return_arr.reshape(M1.shape[0] ,M2.shape[1])
+    return r_mat
+
 M1 = np.array([[1,2],[3,4],[5,6]])
 M2 = np.array([[2,1],[0,2]])
 
-M3 = np.arange(21).reshape(3,7)
-M4 = np.arange(49).reshape(7,7)
+M3 = np.arange(8).reshape(2,4)
+M4 = np.arange(16).reshape(4,4)
 M_res = matmult(M3, M4)
 print(M_res)
