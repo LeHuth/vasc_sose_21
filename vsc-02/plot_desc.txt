@@ -1,7 +1,7 @@
-Die Plots stellen den Error des Archimedesverfahrens bei der Berechnung des Kreisumfanges über mehrer Iterationen hinweg dar.
-Bei dem ersten Plot ist Zusehen, das der Error nach 14 Iterationen einen Tiefpunkt erreicht hat und danach bis Iteration 30 wieder
+Die Plots stellen den Error des Archimedesverfahrens bei der Berechnung des Kreisumfanges über mehrere Iterationen hinweg dar.
+Bei dem ersten Plot ist zusehen, dass der Error nach 14 Iterationen einen Tiefpunkt erreicht hat und danach bis Iteration 30 wieder
 auf seinen ursprünglichen Wert ansteigt.
-Der zweite Plot zeigt, dass der Error seinen Tiefpunkt bei Iteration 25 erreicht hat. Allerdings bleibt der Wert danach Ungefähr gleich bis Iteration 30.
-Erwähnenswert ist, dass der Tiefpunkt des Errors im zweiten Plot deutlich niedriger gegenüber dem des ersten.
+Der zweite Plot zeigt, dass der Error seinen Tiefpunkt bei Iteration 25 erreicht hat. Allerdings bleibt der Wert danach ungefähr gleich bis Iteration 30.
+Erwähnenswert ist, dass der Tiefpunkt des Errors im zweiten Plot deutlich niedriger gegenüber dem des Ersten.
 
 Error = Differenz zwischen Umfang errechnet mit PI und Umfang errechnet mit dem Archimedesverfahren.
