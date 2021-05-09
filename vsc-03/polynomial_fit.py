@@ -53,11 +53,12 @@ best_coefficient_mae = np.array([])
 polynomial_mae = 0
 for d in range(1,20):
     mae, coefficient = create_matrix(x, d)
+    print(mae)
     if d == 1:
         least_error_mae = mae
         best_coefficient_mae = coefficient
         polynomial_mae = d
-    if mae < least_error_mae:
+    if mae < least_error_mae-0.5:
         best_coefficient_mae = coefficient
         polynomial_mae = d
         least_error_mae = mae
