@@ -49,13 +49,21 @@ def magnitude_of_gradients(RGB_img):
     :return: length of the gradient
     """
     # 3.1.1 TODO. Wandeln Sie das RGB Bild in ein grayscale Bild um.
-    ...
+    RGB_img = RGB_img.astype("float64")
+    g_img = RGB_img[..., :3] @ np.array([0.299, 0.587, 0.114])
     # 3.1.2 TODO: Definieren Sie den x-Sobel Kernel und y-Sobel Kernel.
-
+    x_sobel = np.array([[1,0,-1],
+                        [2,0,-2],
+                        [1,0,-1]])
+    y_sobel = np.array([[1,2,1],
+                        [0,0,0],
+                        [-1,-2,-1]])
     # 3.1.3 TODO: Nutzen Sie sie convolution2D Funktion um die Gradienten in x- und y-Richtung zu berechnen.
-
+    x_grad = convolution2D(g_img, x_sobel)
+    y_grad = convolution2D(g_img, y_sobel)
     # 3.1.4 TODO: Nutzen Sie die zwei resultierenden Gradienten um die gesammt Gradientenlängen an jedem Pixel auszurechnen.
-
+    return np.sqrt(x_grad**2 + y_grad**2)
+    #return np.arctan(x_grad/y_grad)
 
 # Diese if Abfrage (if __name__ == '__main__':) sorgt dafür, dass der Code nur
 # ausgeführt wird, wenn die Datei (mog.py) per python/jupyter ausgeführt wird ($ python mog.py).
@@ -88,11 +96,14 @@ if __name__ == '__main__':
                            [1,4,6,4,1]])
 
     # Wandelt RGB Bild in ein grayscale Bild um
-    gray = img[...,:3]@np.array([0.299, 0.587, 0.114])
-    conv_img = convolution2D(gray, emboss)
-    print(gray)
+    #gray = img[...,:3]@np.array([0.299, 0.587, 0.114])
+    #conv_img = convolution2D(gray, emboss)
+    #print(gray)
 
-    show_image(conv_img)
+    #show_image(conv_img)
+
+    mog = magnitude_of_gradients(img)
+    show_image(mog)
     # Aufgabe 1.
     # 1.1 TODO: Implementieren Sie die convolution2D Funktion (oben)
 

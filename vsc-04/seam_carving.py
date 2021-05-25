@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.image as mpimage
+from mog import magnitude_of_gradients
 
 
 def seam_carve(image, seam_mask):
@@ -110,7 +111,7 @@ if __name__ == '__main__':
         #               energy = magnitude_of_gradients(new_img)
         # Tipp: Als Test wäre eine einfache Matrix hilfreich:
         # energy = np.array([[40, 60, 40, 10],[53.3, 50, 25, 47.5],[50, 40, 40, 60]])
-
+        energy = magnitude_of_gradients(new_img)
         # Aufgabe 2:
         # 2.1 TODO: Implementieren Sie die Funktion calculate_accum_energy.
         # Sie soll gegeben eine Energy-Matrix die akkumulierten Energien berechnen.
