@@ -39,14 +39,24 @@ def calculate_accum_energy(energy):
     """
     # 2.1 TODO: Initialisieren Sie das neue resultierende Array
     # Codebeispiel: accumE = np.array(energy)
-    ...
+    accumE = np.array(energy)
     # 2.2 TODO: Füllen Sie das Array indem Sie die akkumulierten
     # Energien berechnen (dynamische Programmierung)
-
+    print(energy.shape)
+    for i in range(energy.shape[0]):
+        for j in range(energy.shape[1]):
+            if i == 0:
+                accumE[i,j] = energy[i,j]
+            elif j + 1 >= energy.shape[1]:
+                accumE[i, j] = energy[i,j] + np.amin(np.array([energy[i - 1, j - 1], energy[i - 1, j]]))
+            elif j - 1 < 0:
+                accumE[i, j] = energy[i,j] + np.amin(np.array([energy[i - 1, j], energy[i - 1, j + 1]]))
+            else:
+                accumE[i,j] = energy[i,j] + np.amin(np.array([energy[i-1,j-1], energy[i-1,j], energy[i-1,j+1]]))
     # Tipp: Benutzen Sie das Beispiel aus der Übung zum debuggen
 
     # 2.3 TODO: Returnen Sie die die akkumulierten Energien
-
+    return accumE
 
 def create_seam_mask(accumE):
     """
@@ -92,7 +102,7 @@ if __name__ == '__main__':
 
     # Parameter einstellen:
     # Tipp: hier number_of_seams_to_remove am Anfang einfach mal auf 1 setzen
-    number_of_seams_to_remove = 10
+    number_of_seams_to_remove = 1
 
     # erstellet das neue Bild, welches verkleinert wird
     new_img = np.array(img, copy=True)
@@ -110,13 +120,14 @@ if __name__ == '__main__':
         # Codebeispiel: from mog import magnitude_of_gradients
         #               energy = magnitude_of_gradients(new_img)
         # Tipp: Als Test wäre eine einfache Matrix hilfreich:
-        # energy = np.array([[40, 60, 40, 10],[53.3, 50, 25, 47.5],[50, 40, 40, 60]])
-        energy = magnitude_of_gradients(new_img)
+        energy = np.array([[40, 60, 40, 10],[53.3, 50, 25, 47.5],[50, 40, 40, 60]])
+        #energy = magnitude_of_gradients(new_img)
         # Aufgabe 2:
         # 2.1 TODO: Implementieren Sie die Funktion calculate_accum_energy.
         # Sie soll gegeben eine Energy-Matrix die akkumulierten Energien berechnen.
-        # Codebeispiel: accumE = calculate_accum_energy(energy)
-
+        accumE = calculate_accum_energy(energy)
+        print(energy)
+        print(accumE)
         # Aufgabe 3:
         # 3.1 TODO: Implementieren Sie die Funktion create_seam_mask.
         # Sie soll gegeben einer akkumulierten Energie-matrix einen Pfad finden,
