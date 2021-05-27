@@ -67,7 +67,7 @@ def create_seam_mask(accumE):
     """
     # 3.1.1 TODO: Initialisieren Sie eine Maske voller True-Werte
     # Codebeispiel: Mask = np.ones(accumE.shape, dtype=bool)
-    ...
+    Mask = np.ones(accumE.shape, dtype=bool)
     # 3.1.2 TODO: Finden Sie das erste Minimum der akkumulierten Energien.
 
     # Achtung! Nach welchem Minimum ist gefragt? Wo muss nach dem Minimum gesucht werden?
@@ -83,7 +83,25 @@ def create_seam_mask(accumE):
     # nach dem nächsten Minimum enorm ein.
 
     # 3.1.5 TODO: Returnen Sie die fertige Maske
+    mask = np.ones(accumE.shape, dtype=bool)
+    mini = 0
+    j_index = 0
+    for i in range(len(accumE) - 1, -1, -1):
+        if i == accumE.shape[0] - 1:
+            mini = np.argmin(accumE[i])
+            print(accumE[i], mini, accumE[i, mini])
+            mask[i, mini] = False
+            j_index = mini
+        else:
+            mini = np.argmin(accumE[i,mini-1 if mini-1>-1 else mini:mini+2 if mini+2<=accumE.shape[1] else mini+1])
+            if mini == 0:
+                j_index -= 1
+            elif mini == 2:
+                j_index += 1
 
+            mini = j_index
+            mask[i, mini] = False
+    return mask
 
 # ------------------------------------------------------------------------------
 # Main Bereich
