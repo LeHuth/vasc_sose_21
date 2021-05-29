@@ -96,32 +96,18 @@ def create_seam_mask(accumE):
     mini = 0
     j_index = 0
     for i in range(len(accumE) - 1, -1, -1):
-
         if i == accumE.shape[0] - 1:
             mini = np.argmin(accumE[i])
             mask[i, mini] = False
             j_index = mini
-
         else:
-            print("-------------------------------------------------------")
-            print("obseved 3 options: ",
-                  accumE[i, mini - 1 if mini - 1 >= 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1])
-            print(i, mini - 1 if mini - 1 >= 0 else mini, mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1)
-            print("index of minimum: ", np.argmin(
-                accumE[i, mini - 1 if mini - 1 > 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1]))
-            mini = np.argmin(
-                accumE[i, mini - 1 if mini - 1 >= 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1])
-            print("j_index:", j_index)
+            mini = np.argmin(accumE[i, mini - 1 if mini - 1 >= 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1])
             if mini == 0 and j_index > 0:
-                # print("-1")
                 j_index -= 1
             elif mini == 2 and j_index < accumE.shape[1]:
                 j_index += 1
-
             mini = j_index
-            print(accumE[i, mini], "= false")
             mask[i, mini] = False
-        # print(mask[i])
     return mask
 
 # ------------------------------------------------------------------------------
@@ -141,7 +127,7 @@ if __name__ == '__main__':
 
     # Parameter einstellen:
     # Tipp: hier number_of_seams_to_remove am Anfang einfach mal auf 1 setzen
-    number_of_seams_to_remove = 10
+    number_of_seams_to_remove = 20
 
     # erstellet das neue Bild, welches verkleinert wird
     new_img = np.array(img, copy=True)
@@ -152,7 +138,6 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------
     # Für jeden Seam, der entfernt werden soll:
     for idx in range(number_of_seams_to_remove):
-        print(idx)
         # Aufgabe 1:
         # 1.1 TODO: Berechnen Sie die Gradientenlängen des Eingabe Bildes
         # und nutzen Sie diese als Energie-Werte. Sie können dazu Ihre Funktion
@@ -162,12 +147,10 @@ if __name__ == '__main__':
         # Tipp: Als Test wäre eine einfache Matrix hilfreich:
         #energy = np.array([[40, 60, 40, 10, 20],[53.3, 50, 25, 47.5, 40],[50, 40, 40, 60, 90],[30,70,75,25,50],[65,70,30,30,10]])
         energy = magnitude_of_gradients(new_img)
-        print(energy)
         # Aufgabe 2:
         # 2.1 TODO: Implementieren Sie die Funktion calculate_accum_energy.
         # Sie soll gegeben eine Energy-Matrix die akkumulierten Energien berechnen.
         accumE = calculate_accum_energy(energy)
-        print(accumE)
         # Aufgabe 3:
         # 3.1 TODO: Implementieren Sie die Funktion create_seam_mask.
         # Sie soll gegeben einer akkumulierten Energie-matrix einen Pfad finden,
@@ -198,10 +181,15 @@ if __name__ == '__main__':
         copy_img[global_mask, :] = [255, 0, 0]
         # Aufgabe 6:
         # 6.1 TODO: Speichere das verkleinerte Bild
-        show_image(new_img)
+        show_image(copy_img)
+        mpimage.imsave("iterations/tower_iteration_" + str(idx) + ".png", new_img)
+        mpimage.imsave("iterations/tower_mask_iteration_" + str(idx) + ".png", copy_img)
         # 6.2 TODO: Speichere das Orginalbild mit allen bisher entfernten Pfaden
 
         # 6.3 TODO: Gebe die neue Bildgröße aus:
-        # Codebeispiel: print(idx, " image carved:", new_img.shape)
+        print(idx, " image carved:" + str(idx), new_img.shape)
 
     # 6.4. TODO: Speichere das resultierende Bild nocheinmal extra.
+    mpimage.imsave("tower_original.png", img)
+    mpimage.imsave("tower_w_seam_mask.png", copy_img)
+    mpimage.imsave("tower_carved.png", new_img)

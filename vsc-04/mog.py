@@ -74,12 +74,12 @@ if __name__ == '__main__':
     show_image(img)
     #show_image(img)
     img = img.astype("float64")
-    right_sobel = np.array([[-1,0,1],
-                            [-2,0,2],
-                            [-1,0,1]])
-    left_sobel = np.array([ [1,0,-1],
-                            [2,0,-2],
-                            [1,0,-1]])
+    x_sobel = np.array([[1,0,-1],
+                        [2,0,-2],
+                        [1,0,-1]])
+    y_sobel = np.array([[1,2,1],
+                        [0,0,0],
+                        [-1,-2,-1]])
     sharpen = np.array([[0,-1,0],
                         [-1,5,-1],
                         [0,-1,0]])
@@ -89,15 +89,20 @@ if __name__ == '__main__':
     edge_detection = np.array([ [-1,-1,-1],
                                 [-1,8,-1],
                                 [-1,-1,-1]])
-    gauss_blur = (1/250)/np.array([[1,4,6,4,1],
+    blur = (1/250)/np.array([[1,4,6,4,1],
                            [4,16,24,16,4],
                            [6,24,36,24,6],
                            [4,16,24,16,4],
                            [1,4,6,4,1]])
 
     # Wandelt RGB Bild in ein grayscale Bild um
-    #gray = img[...,:3]@np.array([0.299, 0.587, 0.114])
-    #conv_img = convolution2D(gray, emboss)
+    gray = img[...,:3]@np.array([0.299, 0.587, 0.114])
+    conv_img_sobelx = convolution2D(gray,x_sobel)
+    conv_img_sobely = convolution2D(gray, y_sobel)
+    conv_img_sharpen = convolution2D(gray, sharpen)
+    conv_img_emboss = convolution2D(gray, emboss)
+    conv_img_edge_detection = convolution2D(gray, edge_detection)
+    conv_img_blur = convolution2D(gray, blur)
     #print(gray)
 
     #show_image(conv_img)
@@ -124,4 +129,10 @@ if __name__ == '__main__':
     # Tipp 2: So können Sie eine NxMx3 Matrix als Bild speichern:
     # mpimage.imsave("test.png", img)
     # und so können Sie eine NxM Matrix als grayscale Bild speichern:
-    # mpimage.imsave("test.png", gray, cmap="gray")
+    mpimage.imsave("sobel_x.png", conv_img_sobelx, cmap="gray")
+    mpimage.imsave("sobel_ly.png", conv_img_sobely, cmap="gray")
+    mpimage.imsave("sharpen.png", conv_img_sharpen, cmap="gray")
+    mpimage.imsave("emboss.png", conv_img_emboss, cmap="gray")
+    mpimage.imsave("edge_detection.png", conv_img_edge_detection, cmap="gray")
+    mpimage.imsave("blur.png", conv_img_blur, cmap="gray")
+    mpimage.imsave("mog.png", mog, cmap="gray")
