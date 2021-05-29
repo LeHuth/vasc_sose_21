@@ -96,26 +96,32 @@ def create_seam_mask(accumE):
     mini = 0
     j_index = 0
     for i in range(len(accumE) - 1, -1, -1):
+
         if i == accumE.shape[0] - 1:
             mini = np.argmin(accumE[i])
-            #print(accumE[i])
-
             mask[i, mini] = False
             j_index = mini
-        elif i == 0:
-            mask[i, mini] = False
+
         else:
-            #print(i,mini)
-            mini = np.argmin(accumE[i,mini-1 if mini-1>0 else mini:mini+2 if mini+2<=accumE.shape[1] else mini+1])
-            #print(mini)
-            if mini == 0 & mini-1 >0:
+            print("-------------------------------------------------------")
+            print("obseved 3 options: ",
+                  accumE[i, mini - 1 if mini - 1 >= 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1])
+            print(i, mini - 1 if mini - 1 >= 0 else mini, mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1)
+            print("index of minimum: ", np.argmin(
+                accumE[i, mini - 1 if mini - 1 > 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1]))
+            mini = np.argmin(
+                accumE[i, mini - 1 if mini - 1 >= 0 else mini:mini + 2 if mini + 2 <= accumE.shape[1] else mini + 1])
+            print("j_index:", j_index)
+            if mini == 0 and j_index > 0:
+                # print("-1")
                 j_index -= 1
-            elif mini == 2 & mini+2 <=accumE.shape[1]:
+            elif mini == 2 and j_index < accumE.shape[1]:
                 j_index += 1
 
             mini = j_index
+            print(accumE[i, mini], "= false")
             mask[i, mini] = False
-        print(mask[i])
+        # print(mask[i])
     return mask
 
 # ------------------------------------------------------------------------------
@@ -135,7 +141,7 @@ if __name__ == '__main__':
 
     # Parameter einstellen:
     # Tipp: hier number_of_seams_to_remove am Anfang einfach mal auf 1 setzen
-    number_of_seams_to_remove = 1
+    number_of_seams_to_remove = 10
 
     # erstellet das neue Bild, welches verkleinert wird
     new_img = np.array(img, copy=True)
@@ -192,7 +198,7 @@ if __name__ == '__main__':
         copy_img[global_mask, :] = [255, 0, 0]
         # Aufgabe 6:
         # 6.1 TODO: Speichere das verkleinerte Bild
-        show_image(seam_mask)
+        show_image(new_img)
         # 6.2 TODO: Speichere das Orginalbild mit allen bisher entfernten Pfaden
 
         # 6.3 TODO: Gebe die neue Bildgröße aus:
