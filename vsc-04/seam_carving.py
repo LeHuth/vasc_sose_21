@@ -1,19 +1,29 @@
 import numpy as np
 import matplotlib.image as mpimage
-from mog import magnitude_of_gradients
+from mog import magnitude_of_gradients, show_image
 
 
 def seam_carve(image, seam_mask):
     """
     Removes a seam from the image depending on the seam mask. Returns an image
      that has one column less than <image>
+    flattend_img = np.reshape(image, (image.shape[0] * image.shape[1], 3))
+    #print(image.shape)
+    #print(flattend_img.shape)
+    #print(np.where(seam_mask.flatten() == False))
+    new_arr = np.delete(flattend_img,np.where(seam_mask.flatten() == False), axis=0)
+    #print(image.shape)
 
+    return new_arr.reshape(image.shape[0],image.shape[1]-1, 3)
     :param image:
     :param seam_mask:
     :return: smaller image
-    """
+
+    print(image.shape)
+        """
     shrunken = image[seam_mask].reshape((image.shape[0],-1,image[...,None].shape[2]))
     return shrunken.squeeze()
+
 
 
 def update_global_mask(global_mask, new_mask):
@@ -42,17 +52,16 @@ def calculate_accum_energy(energy):
     accumE = np.array(energy)
     # 2.2 TODO: Füllen Sie das Array indem Sie die akkumulierten
     # Energien berechnen (dynamische Programmierung)
-    print(energy.shape)
     for i in range(energy.shape[0]):
         for j in range(energy.shape[1]):
             if i == 0:
                 accumE[i,j] = energy[i,j]
             elif j + 1 >= energy.shape[1]:
-                accumE[i, j] = energy[i,j] + np.amin(np.array([energy[i - 1, j - 1], energy[i - 1, j]]))
+                accumE[i, j] = energy[i,j] + np.amin(np.array([accumE[i - 1, j - 1], accumE[i - 1, j]]))
             elif j - 1 < 0:
-                accumE[i, j] = energy[i,j] + np.amin(np.array([energy[i - 1, j], energy[i - 1, j + 1]]))
+                accumE[i, j] = energy[i,j] + np.amin(np.array([accumE[i - 1, j], accumE[i - 1, j + 1]]))
             else:
-                accumE[i,j] = energy[i,j] + np.amin(np.array([energy[i-1,j-1], energy[i-1,j], energy[i-1,j+1]]))
+                accumE[i,j] = energy[i,j] + np.amin(np.array([accumE[i-1,j-1], accumE[i-1,j], accumE[i-1,j+1]]))
     # Tipp: Benutzen Sie das Beispiel aus der Übung zum debuggen
 
     # 2.3 TODO: Returnen Sie die die akkumulierten Energien
@@ -89,18 +98,24 @@ def create_seam_mask(accumE):
     for i in range(len(accumE) - 1, -1, -1):
         if i == accumE.shape[0] - 1:
             mini = np.argmin(accumE[i])
-            print(accumE[i], mini, accumE[i, mini])
+            #print(accumE[i])
+
             mask[i, mini] = False
             j_index = mini
+        elif i == 0:
+            mask[i, mini] = False
         else:
-            mini = np.argmin(accumE[i,mini-1 if mini-1>-1 else mini:mini+2 if mini+2<=accumE.shape[1] else mini+1])
-            if mini == 0:
+            #print(i,mini)
+            mini = np.argmin(accumE[i,mini-1 if mini-1>0 else mini:mini+2 if mini+2<=accumE.shape[1] else mini+1])
+            #print(mini)
+            if mini == 0 & mini-1 >0:
                 j_index -= 1
-            elif mini == 2:
+            elif mini == 2 & mini+2 <=accumE.shape[1]:
                 j_index += 1
 
             mini = j_index
             mask[i, mini] = False
+        print(mask[i])
     return mask
 
 # ------------------------------------------------------------------------------
@@ -124,13 +139,14 @@ if __name__ == '__main__':
 
     # erstellet das neue Bild, welches verkleinert wird
     new_img = np.array(img, copy=True)
+    copy_img = np.array(img, copy=True)
 
     # --------------------------------------------------------------------------
     # Der Algorithmus
     # --------------------------------------------------------------------------
     # Für jeden Seam, der entfernt werden soll:
     for idx in range(number_of_seams_to_remove):
-        ...
+        print(idx)
         # Aufgabe 1:
         # 1.1 TODO: Berechnen Sie die Gradientenlängen des Eingabe Bildes
         # und nutzen Sie diese als Energie-Werte. Sie können dazu Ihre Funktion
@@ -138,13 +154,13 @@ if __name__ == '__main__':
         # Codebeispiel: from mog import magnitude_of_gradients
         #               energy = magnitude_of_gradients(new_img)
         # Tipp: Als Test wäre eine einfache Matrix hilfreich:
-        energy = np.array([[40, 60, 40, 10],[53.3, 50, 25, 47.5],[50, 40, 40, 60]])
-        #energy = magnitude_of_gradients(new_img)
+        #energy = np.array([[40, 60, 40, 10, 20],[53.3, 50, 25, 47.5, 40],[50, 40, 40, 60, 90],[30,70,75,25,50],[65,70,30,30,10]])
+        energy = magnitude_of_gradients(new_img)
+        print(energy)
         # Aufgabe 2:
         # 2.1 TODO: Implementieren Sie die Funktion calculate_accum_energy.
         # Sie soll gegeben eine Energy-Matrix die akkumulierten Energien berechnen.
         accumE = calculate_accum_energy(energy)
-        print(energy)
         print(accumE)
         # Aufgabe 3:
         # 3.1 TODO: Implementieren Sie die Funktion create_seam_mask.
@@ -163,17 +179,20 @@ if __name__ == '__main__':
         # 4.1 TODO: Entfernen Sie den "seam" aus dem Bild mithilfe der Maske und
         # der Funktion seam_carve. Diese Funktion ist vorgegeben und muss nicht
         # implementiert werden.
-        # Codebeispiel: new_img = seam_carve(new_img, seam_mask)
+
+        seam_mask = create_seam_mask(accumE)
+        new_img = seam_carve(new_img, seam_mask)
 
         # Aufgabe 5:
         # 5.1 TODO: Updaten Sie die globale Maske mit dem aktuellen Seam (update_global_mask).
-
+        global_mask = update_global_mask(global_mask,seam_mask)
         # 5.2 TODO: Kopieren Sie das Originalbild und färben Sie alle Pfade, die bisher
         #            entfert wurden, rot mithilfe der globalen Maske
         # Codebeispiel: copy_img[global_mask, :] = [255,0,0]
+        copy_img[global_mask, :] = [255, 0, 0]
         # Aufgabe 6:
         # 6.1 TODO: Speichere das verkleinerte Bild
-
+        show_image(seam_mask)
         # 6.2 TODO: Speichere das Orginalbild mit allen bisher entfernten Pfaden
 
         # 6.3 TODO: Gebe die neue Bildgröße aus:

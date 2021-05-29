@@ -70,7 +70,7 @@ def magnitude_of_gradients(RGB_img):
 # Solltet Ihr die Datei per "import mog" in einem anderen Script einbinden, wird dieser Code übersprungen.
 if __name__ == '__main__':
     # Bild laden und zu float konvertieren
-    img = mpimage.imread('bilder/human.jpg')
+    img = mpimage.imread('bilder/tower.jpg')
     show_image(img)
     #show_image(img)
     img = img.astype("float64")
