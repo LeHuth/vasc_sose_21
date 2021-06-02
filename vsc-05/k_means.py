@@ -55,9 +55,14 @@ def assign_to_center(points, centers):
     """
     # 2.1.1 Berechnen Sie pro Punkt die Distanz zu allen cluster centers und speichern
     # Sie den index des nächsten Clusters sowie den Abstande zu dem cluster centers
-
+    indices = np.zeros(len(points))
+    sum = 0
+    for idx,p in enumerate(points):
+        #https://stackoverflow.com/questions/1401712/how-can-the-euclidean-distance-be-calculated-with-numpy
+        indices[idx] = np.argmin(np.linalg.norm(centers - p, axis=1))
+        sum += np.sum(np.linalg.norm(centers-p, axis=1))
     # 2.1.2 Returnen Sie die Indices sowie die Summe der Abstände
-    ...
+    return indices , sum
 
 
 def update_centers(points, centers, indices):
@@ -92,11 +97,13 @@ def k_means(points, k, iterations=10):
     """
     # 1. Initializieren Sie die cluster centers und die indices.
     # Implementieren Sie dazu die Funktion initialize
-    init_cluster_center = initialize(points, k)
+    centers = initialize(points, k)
     # 2. Pro iteration:
+    for i in range(iterations):
+
         # 2.1 Weisen Sie den Punkten die jeweiligen cluster center zu
         # Implementieren Sie dazu die Funktion assign_to_center
-
+        assign_to_center(points, centers)
         # 2.2 Aktualisieren Sie die neuen cluster center anhand der berechneten indices.
         # Implementieren Sie dazu die Funktion update_centers
 
