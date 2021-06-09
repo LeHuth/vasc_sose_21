@@ -13,6 +13,7 @@ def plot_clusters(points, centers, indices):
     plt.clf()
     plt.axis('equal')
     plt.ion()
+    print(len(centers), )
     for i in range(len(centers)):
         # Plotting the clusters
         plt.plot(*zip(*points[indices == i]),  marker='.', color=cluster_colors[i], ls='')
@@ -62,7 +63,7 @@ def assign_to_center(points, centers):
         indices[idx] = np.argmin(np.linalg.norm(centers - p, axis=1))
         sum += np.sum(np.linalg.norm(centers-p, axis=1))
     # 2.1.2 Returnen Sie die Indices sowie die Summe der Abstände
-    return indices , sum
+    return indices, sum
 
 
 def update_centers(points, centers, indices):
@@ -79,10 +80,17 @@ def update_centers(points, centers, indices):
     :return: new cluster centers
     """
     # 2.2.1 Updaten Sie die cluster centers mit dem Durchschnittspunkt in jedem Cluster
-    ...
+    for c in range(len(centers)):
+        if len(points[indices == c] != 0):
+            centers[c] = np.sum(points[indices == c], axis=0) / len(points[indices == c])
+        else:
+            centers[c] = np.sum(points[indices == c], axis=0)
+
+    return centers
 
 
-def k_means(points, k, iterations=10):
+
+def k_means(points, k, iterations=5):
     """
     Assigns each data point to its nearest cluster center (the smallest eucledian distance).
     The function returns the indices and the overall_distance,
@@ -99,22 +107,26 @@ def k_means(points, k, iterations=10):
     # Implementieren Sie dazu die Funktion initialize
     centers = initialize(points, k)
     # 2. Pro iteration:
+    old_sum = 0
     for i in range(iterations):
 
         # 2.1 Weisen Sie den Punkten die jeweiligen cluster center zu
         # Implementieren Sie dazu die Funktion assign_to_center
-        assign_to_center(points, centers)
+        indices, sum = assign_to_center(points, centers)
+        print((sum - old_sum) / sum * 100)
+        if np.abs((sum - old_sum) / sum * 100) < 1.0:
+            return centers, indices
         # 2.2 Aktualisieren Sie die neuen cluster center anhand der berechneten indices.
         # Implementieren Sie dazu die Funktion update_centers
-
+        update_centers(points,centers,indices)
         # 2.3 (optional) Plotten Sie die cluster und Datenpunkte mittels plot_clusters
-        # plot_clusters(points, centers, indices)
-
+        #plot_clusters(points, centers, indices)
+        old_sum = sum
         # 2.4 (optional) Brechen Sie die Schleife vorzeitig ab sollten sich die
         # Distanz zu den cluster centern kaum noch verändert haben
 
     # 3. Return cluster centers und indices
-    ...
+    return centers, indices
 
 
 # ---------------------------------------------------------------------------
@@ -134,16 +146,16 @@ if __name__ == "__main__":
     centers, indices = k_means(points, num_clusters, num_iter)
 
     # Plotten des Ergebnisses
-    #plot_clusters(points, centers, indices)
+    plot_clusters(points, centers, indices)
 
     # Wenn k-means funktionstüchtig ist, kann dieser Bereich einkommentiert werden
     # Mit diesm Beispielcode kann in einem Bild die Anzahl der Farben reduziert
     # werden (nötig um ein z.B. ein gif Bild zu generieren):
-    # img = plt.imread("Broadway_tower.jpg").copy()
-    # cc, ci = k_means(img.reshape(-1,3), 256, num_iter)
-    # for i in range(len(cc)):
-    #     map = ci.reshape(img.shape[:2])
-    #     img[map == i,:] = cc[i]
-    #
-    # plt.imshow(img)
-    # plt.show()
+    img = plt.imread(r"C:\Users\leona\PycharmProjects\vasc_sose_21\vsc-05\images\landscape.jpg").copy()
+    cc, ci = k_means(img.reshape(-1,3), 6, num_iter)
+    for i in range(len(cc)):
+        map = ci.reshape(img.shape[:2])
+        img[map == i,:] = cc[i]
+
+    plt.imshow(img)
+    plt.show()
