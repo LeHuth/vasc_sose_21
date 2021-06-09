@@ -7,7 +7,7 @@ from collections import Counter
 def distance(a, b):
     """calculates the distance between two vectors (or matrices)"""
     # 2.1.1 Berechnen Sie die Distanz zwischen zwei Matritzen/Bildern
-    return np.linalg.norm(a - b)
+    return np.linalg.norm(b - a)
 
 
 def knn(query, data, labels, k):
@@ -27,20 +27,22 @@ def knn(query, data, labels, k):
     # 2.1 Berechnen Sie die Distanzen von query zu allen Elementen in data
     # Implementieren Sie dazu die Funktion distance
     for idx,sample in enumerate(data):
-        dist_list.append((sample[0], distance(sample[1], query)))
+        dist_list.append(distance(sample, query))
 
-
-    # 2.2 Finden Sie die k nächsten datenpunkte in data
-    dist_list.sort(key=lambda tup: tup[1])
     #print(dist_list)
+    #print(labels)
+    # 2.2 Finden Sie die k nächsten datenpunkte in data
+    dist_sorted, labels_sorted = zip(*sorted(zip(dist_list, labels)))
+    #print(dist_sorted)
+    #print(labels_sorted)
     # 2.3 Geben Sie das Label, welches am häufigsten uner den k nächsten Nachbar
     # vorkommt und die Häufigkeit als tuple zurück.
     # Tipp: Counter(["a","b","c","b","b","d"]).most_common(1)[0]
-    li = [i[0] for i in dist_list]
+
     #print(li)
-    print(Counter(li[:k]).most_common(1)[0])
+    #print(Counter(labels_sorted).most_common(3)[0])
     # returned das häufigste Element der Liste und deren Anzahl also ("b", 3)
-    return Counter(li[:k]).most_common(1)[0]
+    return Counter(labels_sorted).most_common(k)[0]
 
 
 # ---------------------------------------------------------------------------
@@ -55,25 +57,23 @@ if __name__ == "__main__":
     # Tipp:
     # mit glob.glob("images/db/test/*") bekommen Sie eine Liste mit allen Dateien in dem angegebenen Verzeichnis
     #print(glob.glob("images/db/train/*"))
-    data_list = []
+    datapoints = []
+    labels = []
     for idx, dir in enumerate(glob.glob("images/db/train/*")):
         for img in glob.glob(dir+"/*"):
-            data_list.append((idx,plt.imread(img)))
-
-    label_list = ["car", "face", "flower"]
+            datapoints.append(plt.imread(img))
+            labels.append(dir.split('\\')[-1])
     # 2. Implementieren Sie die Funktion knn.
     #q = plt.imread("images/db/train/cars/car001.jpg")
 
 
 
     query = []
-    for test in glob.glob("images/db/test/*"):
-        query.append(plt.imread(test))
+    for q in glob.glob("images/db/test/*"):
+        result = knn(plt.imread(q), datapoints, labels, 7)
+        print(q, "=", result[0])
 
-    for idx, q in enumerate(query):
-        result = knn(q, data_list, label_list, 7)
-        print(result)
-        print(glob.glob("images/db/test/*")[idx], "=", label_list[result[0]])
+
     # 3. Laden Sie die Testbilder aus dem Ordner "images/db/test/" und rufen Sie
     # auf der Datenbank knn auf. Geben Sie zu jedem Testbild das prognostizierte Label aus.
     # Varieren Sie den Parameter k.
